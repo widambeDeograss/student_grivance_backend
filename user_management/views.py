@@ -70,8 +70,8 @@ class LoginView(APIView):
             return Response(response)
 #
 # {
-#     "email":"widambe@gmail.com",
-#     "password":"2+++++++++++++++++++++++++++++++5"
+#     "username":"johnlukundo",
+#     "password":"12345"
 # }
 
 

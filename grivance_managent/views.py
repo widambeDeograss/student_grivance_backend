@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 
 
+
 # Create your views here.
 class DivisionView(APIView):
     permission_classes = [AllowAny]
@@ -451,7 +452,7 @@ class DashBoardStats(APIView):
 
 @shared_task
 def check_time_limit_notifications():
-    print("----------------------------------------------")
+    print("----------------------------------------------");
     threshold_time = timezone.now() + timezone.timedelta(minutes=30)  # Example: 30 minutes before time limit
     problems_near_time_limit = SubmittedProblems.objects.filter(created_at__lte=threshold_time)
 
