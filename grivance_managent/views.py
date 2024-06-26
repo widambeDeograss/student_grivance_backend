@@ -450,6 +450,32 @@ class DashBoardStats(APIView):
         return JsonResponse(data)
 
 
+class GrievanceWorkFlow(APIView):
+    @staticmethod
+    def get(request):
+        threshold_time = timezone.now()
+        problems_to_update = SubmittedProblems.objects.filter(
+            created_at__lte=threshold_time,
+            problem_solved_state=False  # Only consider unsolved problems
+        )
+        resp_division = Division.objects.get(name="Responsible Top Division")
+
+        for problem in problems_to_update:
+            print(problem)
+            if problem.problem_type.time_required:
+                time_limit = problem.created_at + problem.problem_type.time_required
+                print(time_limit)
+                if timezone.now() >= time_limit:
+                    print("time_limit===============================")
+                    send_notification(problem)
+                    problem.current_responsible_division = resp_division
+                    problem.current_responsible_sub_divifany = None
+                    problem.save()
+
+        return Response(True)
+
+
+
 @shared_task
 def check_time_limit_notifications():
     print("----------------------------------------------");
@@ -464,6 +490,18 @@ def check_time_limit_notifications():
 def send_notification(problem):
     subject = f"Problem nearing time limit: {problem.id}"
     message = f"The problem with ID {problem.id} is nearing the time limit."
-    recipients = [
-        problem.current_responsible_division.admin.email]  # Assuming the admin field contains the User with an email field
-    send_mail(subject, message, 'from@example.com', recipients)
+    if problem.current_responsible_sub_divifany is not None:
+        serializedNotification = NotificationPostSerializer(data={
+            "notification": f"Grievance with problem type no {problem.id} has been submitted to your division has passed its deadline",
+            "sub_divifany": problem.current_responsible_sub_divifany.id,
+        })
+        if serializedNotification.is_valid():
+            serializedNotification.save()
+    else:
+
+        serializedNotification = NotificationPostSerializer(data={
+            "notification": f"Grievance with problem type {problem.id} has been submitted to your division has passed its deadline",
+            "division": problem.current_responsible_division.id,
+        })
+        if serializedNotification.is_valid():
+            serializedNotification.save()

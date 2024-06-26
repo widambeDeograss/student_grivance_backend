@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'user_management',
     'corsheaders',
-    'grivance_managent'
+    'grivance_managent',
+    'background_task'
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

@@ -11,4 +11,5 @@ urlpatterns = [
     path('problem_evdc', ProblemEvidenceView.as_view()),
     path('notifications', NotificationView.as_view()),
     path('dashboard_stats', DashBoardStats.as_view()),
+    path('dit_grievance_workflow', GrievanceWorkFlow.as_view(), name='grievance-workflow'),
 ]
