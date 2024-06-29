@@ -155,29 +155,25 @@ class UpdateUserView(APIView):
 
     @staticmethod
     def post(request):
-        gender = request.data['gender']
-        email = request.data['email']
-        fname = request.data['fname']
-        profile = request.data['profile']
-        lname = request.data['lname']
-        phone_number = request.data['phone_number']
+        email = request.data.get('email')
+        fname = request.data.get('first_name')
+        lname = request.data.get('last_name')
+        phone_number = request.data.get('phone_number')
+        username = request.data.get('username')
+
         if phone_number:
             try:
                 query = User.objects.get(email=email)
-                query.email = email
                 query.first_name = fname
                 query.last_name = lname
-                query.gender = gender
                 query.phone_number = phone_number
-                query.profile = profile
+                query.username = username
                 query.save()
                 return Response({'save': True, "user": UserSerializer(instance=query, many=False).data})
             except User.DoesNotExist:
-                return Response({'message': 'You can not change the email'})
-
+                return Response({'message': 'User does not exist or you cannot change the email'}, status=400)
         else:
-
-            return Response({'message': 'Not Authorized to Update This User'})
+            return Response({'message': 'Phone number is required'}, status=400)
 
 
 class LoggedInUser(APIView):
@@ -197,5 +193,23 @@ class LoggedInUser(APIView):
             }
             return Response(message)
 
+
+class UpdateUserProfilePictureView(APIView):
+    permission_classes = [AllowAny]
+
+    @staticmethod
+    def post(request):
+        email = request.data.get('email')
+        profile = request.data.get('profile')
+
+        if not profile:
+            return Response({'message': 'Profile picture is required'}, status=400)
+
+        try:
+            user = User.objects.get(email=email)
+            user.update_profile_picture(profile)
+            return Response({'save': True, "user": UserSerializer(instance=user, many=False).data})
+        except User.DoesNotExist:
+            return Response({'message': 'User does not exist or you cannot change the email'}, status=400)
 
 

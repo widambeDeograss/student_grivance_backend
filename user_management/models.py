@@ -44,6 +44,11 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
+    def update_profile_picture(self, profile):
+        self.profile = profile
+        self.save()
+        return self
+
     def __str__(self):
         return self.username
 
