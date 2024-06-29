@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 import sys
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -104,6 +105,12 @@ AUTH_USER_MODEL = 'user_management.User'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+
+
+TIMED_AUTH_TOKEN = {
+    'DEFAULT_VALIDITY_DURATION': timedelta(days=45)
+}
 
 DATABASES = {
     'default': {

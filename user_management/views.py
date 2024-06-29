@@ -160,10 +160,11 @@ class UpdateUserView(APIView):
         lname = request.data.get('last_name')
         phone_number = request.data.get('phone_number')
         username = request.data.get('username')
-
-        if phone_number:
+        print("-------------------", phone_number, email, fname, lname, username)
+        if email:
             try:
                 query = User.objects.get(email=email)
+                print("-------------------")
                 query.first_name = fname
                 query.last_name = lname
                 query.phone_number = phone_number
