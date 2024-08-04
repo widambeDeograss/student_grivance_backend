@@ -73,6 +73,20 @@ class ProblemEvidence(models.Model):
     message = models.TextField(null=True, blank=True)
 
 
+class Suggestions(models.Model):
+    TYPE = (
+        (1, "SUGGESTION"),
+        (2, "PONGEZI"),
+
+    )
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    type = models.PositiveIntegerField(choices=TYPE, default=1)
+    message = models.TextField(null=True, blank=True)
+    division = models.ForeignKey(Division, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+
 class Notification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

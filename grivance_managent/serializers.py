@@ -2,6 +2,13 @@ from rest_framework import serializers
 from .models import *
 
 
+class SuggestionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Suggestions
+        fields = '__all__'
+        depth = 2
+
+
 class DivisionGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Division

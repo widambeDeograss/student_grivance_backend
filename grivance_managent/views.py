@@ -1,7 +1,8 @@
 from datetime import timedelta, datetime
 
 from django.db.models import Count
-from rest_framework import status
+from rest_framework import status, viewsets
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,8 +15,25 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 
 
+class SuggestionsViewSet(ListCreateAPIView):
+    queryset = Suggestions.objects.all()
+    serializer_class = SuggestionsSerializer
 
-# Create your views here.
+    def perform_create(self, serializer):
+        print(self.request.data)
+        print(self.request.data.get('division'), "--------------------------------------")
+        division_id = self.request.data.get('division')
+        if division_id is None:
+            raise ValueError("Division ID cannot be null")
+        serializer.save(division_id=division_id)
+
+
+class SuggestionsRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Suggestions.objects.all()
+    serializer_class = SuggestionsSerializer
+    permission_classes = [AllowAny]
+
+
 class DivisionView(APIView):
     permission_classes = [AllowAny]
 
